@@ -140,27 +140,27 @@ st.markdown('<div class="main-title"><span class="heart-icon">❤</span> Heart D
 st.markdown('<div class="subtitle">Enter patient details below to assess the risk of heart disease</div>', unsafe_allow_html=True)
 
 # Sidebar with enhanced styling
-with st.sidebar:
-    st.markdown('<div class="sidebar-title">ℹ About This App</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sidebar-info">', unsafe_allow_html=True)
-    st.info("""
-    This app predicts the likelihood of *Heart Disease* using a Logistic Regression model trained on clinical data.
+# with st.sidebar:
+#     st.markdown('<div class="sidebar-title">ℹ About This App</div>', unsafe_allow_html=True)
+#     st.markdown('<div class="sidebar-info">', unsafe_allow_html=True)
+#     st.info("""
+#     This app predicts the likelihood of *Heart Disease* using a Logistic Regression model trained on clinical data.
     
-    - Built with *Streamlit* 🖥
-    - Dataset: Heart Disease Dataset
-    - Developer: *Ashadullah*
-    """)
-    st.markdown('</div>', unsafe_allow_html=True)
+#     - Built with *Streamlit* 🖥
+#     - Dataset: Heart Disease Dataset
+#     - Developer: *Ashadullah*
+#     """)
+#     st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown("---")
-    st.markdown("### How to use:")
-    st.write("1. Fill in all the patient details")
-    st.write("2. Click the 'Predict' button")
-    st.write("3. Review the results")
+#     st.markdown("---")
+#     st.markdown("### How to use:")
+#     st.write("1. Fill in all the patient details")
+#     st.write("2. Click the 'Predict' button")
+#     st.write("3. Review the results")
     
-    st.markdown("---")
-    st.markdown("### Disclaimer:")
-    st.write("This tool is for informational purposes only and should not replace professional medical advice.")
+#     st.markdown("---")
+#     st.markdown("### Disclaimer:")
+#     st.write("This tool is for informational purposes only and should not replace professional medical advice.")
 
 # Layout with improved spacing
 col1, col2 = st.columns(2)
