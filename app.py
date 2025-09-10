@@ -74,23 +74,23 @@ def create_model():
     else:
         # Simple prediction function without sklearn
         def simple_predict(input_data):
-            # Simple heuristic based prediction
+    # Simple heuristic based prediction
             age, sex, chest_pain, resting_bp, cholesterol, fasting_bs, resting_ecg, max_hr, exercise_angina, oldpeak, st_slope = input_data[0]
-            
+    
             risk_score = (
-                0.1 * (age - 50) / 30 +
-                0.2 * sex +
-                0.15 * chest_pain +
-                0.1 * (resting_bp - 120) / 40 +
-                0.1 * (cholesterol - 200) / 100 +
-                0.1 * fasting_bs +
-                0.05 * resting_ecg +
-                -0.1 * (max_hr - 150) / 30 +
-                0.15 * exercise_angina +
-                0.2 * oldpeak +
-                0.1 * st_slope
+                0.05 * (age - 50) / 30 +          # Reduced from 0.1
+                0.1 * sex +                       # Reduced from 0.2
+                0.08 * chest_pain +               # Reduced from 0.15
+                0.05 * (resting_bp - 120) / 40 +  # Reduced from 0.1
+                0.05 * (cholesterol - 200) / 100 + # Reduced from 0.1
+                0.05 * fasting_bs +               # Reduced from 0.1
+                0.02 * resting_ecg +              # Reduced from 0.05
+                -0.05 * (max_hr - 150) / 30 +     # Reduced from -0.1
+                0.08 * exercise_angina +          # Reduced from 0.15
+                0.1 * oldpeak +                   # Reduced from 0.2
+                0.05 * st_slope                   # Reduced from 0.1
             )
-            
+    
             probability = 1 / (1 + np.exp(-risk_score))
             prediction = 1 if probability > 0.5 else 0
             
@@ -209,12 +209,12 @@ st.markdown('<div class="main-title"><span class="heart-icon">❤️</span> Hear
 st.markdown('<div class="subtitle">Enter patient details below to assess the risk of heart disease</div>', unsafe_allow_html=True)
 
 # Demo warning
-st.markdown("""
-    <div class="demo-warning">
-        ⚠️ <strong>Demo Mode:</strong> This app uses a simulated model for demonstration purposes. 
-        For actual medical diagnosis, consult healthcare professionals and use clinically validated tools.
-    </div>
-""", unsafe_allow_html=True)
+# st.markdown("""
+#     <div class="demo-warning">
+#         ⚠️ <strong>Demo Mode:</strong> This app uses a simulated model for demonstration purposes. 
+#         For actual medical diagnosis, consult healthcare professionals and use clinically validated tools.
+#     </div>
+# """, unsafe_allow_html=True)
 
 # Sidebar
 with st.sidebar:
