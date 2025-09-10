@@ -1,10 +1,17 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.datasets import make_classification
 import warnings
 warnings.filterwarnings('ignore')
+
+# Try to import sklearn, if not available, create a simple prediction function
+try:
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.datasets import make_classification
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    st.warning("scikit-learn not available. Using simple prediction algorithm.")
 
 # Page Config
 st.set_page_config(
@@ -14,58 +21,84 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Create a simple model for demonstration
+# Create a simple model or prediction function
 @st.cache_resource
-def create_demo_model():
-    # Generate realistic sample data for heart disease prediction
-    np.random.seed(42)
-    
-    # Create more realistic features for heart disease
-    n_samples = 2000
-    
-    # Simulate realistic data ranges
-    age = np.random.normal(55, 10, n_samples).clip(20, 80)
-    sex = np.random.choice([0, 1], n_samples, p=[0.4, 0.6])  # 0=Female, 1=Male
-    chest_pain = np.random.choice([0, 1, 2, 3], n_samples, p=[0.2, 0.3, 0.3, 0.2])
-    resting_bp = np.random.normal(130, 20, n_samples).clip(90, 200)
-    cholesterol = np.random.normal(240, 50, n_samples).clip(150, 400)
-    fasting_bs = np.random.choice([0, 1], n_samples, p=[0.7, 0.3])
-    resting_ecg = np.random.choice([0, 1, 2], n_samples, p=[0.5, 0.3, 0.2])
-    max_hr = np.random.normal(150, 20, n_samples).clip(60, 220)
-    exercise_angina = np.random.choice([0, 1], n_samples, p=[0.6, 0.4])
-    oldpeak = np.random.exponential(0.8, n_samples).clip(0, 6)
-    st_slope = np.random.choice([0, 1, 2], n_samples, p=[0.4, 0.4, 0.2])
-    
-    # Create feature matrix
-    X = np.column_stack([age, sex, chest_pain, resting_bp, cholesterol, 
-                        fasting_bs, resting_ecg, max_hr, exercise_angina, 
-                        oldpeak, st_slope])
-    
-    # Create target variable with some logical relationships
-    heart_disease_prob = (
-        0.1 * (age - 50) / 30 +
-        0.2 * sex +
-        0.15 * chest_pain +
-        0.1 * (resting_bp - 120) / 40 +
-        0.1 * (cholesterol - 200) / 100 +
-        0.1 * fasting_bs +
-        0.05 * resting_ecg +
-        -0.1 * (max_hr - 150) / 30 +
-        0.15 * exercise_angina +
-        0.2 * oldpeak +
-        0.1 * st_slope +
-        np.random.normal(0, 0.2, n_samples)
-    )
-    
-    y = (heart_disease_prob > 0.5).astype(int)
-    
-    # Train logistic regression model
-    model = LogisticRegression(random_state=42, max_iter=1000)
-    model.fit(X, y)
-    
-    return model
+def create_model():
+    if SKLEARN_AVAILABLE:
+        # Generate realistic sample data for heart disease prediction
+        np.random.seed(42)
+        
+        # Create more realistic features for heart disease
+        n_samples = 2000
+        
+        # Simulate realistic data ranges
+        age = np.random.normal(55, 10, n_samples).clip(20, 80)
+        sex = np.random.choice([0, 1], n_samples, p=[0.4, 0.6])
+        chest_pain = np.random.choice([0, 1, 2, 3], n_samples, p=[0.2, 0.3, 0.3, 0.2])
+        resting_bp = np.random.normal(130, 20, n_samples).clip(90, 200)
+        cholesterol = np.random.normal(240, 50, n_samples).clip(150, 400)
+        fasting_bs = np.random.choice([0, 1], n_samples, p=[0.7, 0.3])
+        resting_ecg = np.random.choice([0, 1, 2], n_samples, p=[0.5, 0.3, 0.2])
+        max_hr = np.random.normal(150, 20, n_samples).clip(60, 220)
+        exercise_angina = np.random.choice([0, 1], n_samples, p=[0.6, 0.4])
+        oldpeak = np.random.exponential(0.8, n_samples).clip(0, 6)
+        st_slope = np.random.choice([0, 1, 2], n_samples, p=[0.4, 0.4, 0.2])
+        
+        # Create feature matrix
+        X = np.column_stack([age, sex, chest_pain, resting_bp, cholesterol, 
+                            fasting_bs, resting_ecg, max_hr, exercise_angina, 
+                            oldpeak, st_slope])
+        
+        # Create target variable with some logical relationships
+        heart_disease_prob = (
+            0.1 * (age - 50) / 30 +
+            0.2 * sex +
+            0.15 * chest_pain +
+            0.1 * (resting_bp - 120) / 40 +
+            0.1 * (cholesterol - 200) / 100 +
+            0.1 * fasting_bs +
+            0.05 * resting_ecg +
+            -0.1 * (max_hr - 150) / 30 +
+            0.15 * exercise_angina +
+            0.2 * oldpeak +
+            0.1 * st_slope +
+            np.random.normal(0, 0.2, n_samples)
+        )
+        
+        y = (heart_disease_prob > 0.5).astype(int)
+        
+        # Train logistic regression model
+        model = LogisticRegression(random_state=42, max_iter=1000)
+        model.fit(X, y)
+        return model
+    else:
+        # Simple prediction function without sklearn
+        def simple_predict(input_data):
+            # Simple heuristic based prediction
+            age, sex, chest_pain, resting_bp, cholesterol, fasting_bs, resting_ecg, max_hr, exercise_angina, oldpeak, st_slope = input_data[0]
+            
+            risk_score = (
+                0.1 * (age - 50) / 30 +
+                0.2 * sex +
+                0.15 * chest_pain +
+                0.1 * (resting_bp - 120) / 40 +
+                0.1 * (cholesterol - 200) / 100 +
+                0.1 * fasting_bs +
+                0.05 * resting_ecg +
+                -0.1 * (max_hr - 150) / 30 +
+                0.15 * exercise_angina +
+                0.2 * oldpeak +
+                0.1 * st_slope
+            )
+            
+            probability = 1 / (1 + np.exp(-risk_score))
+            prediction = 1 if probability > 0.5 else 0
+            
+            return prediction, np.array([1 - probability, probability])
+        
+        return simple_predict
 
-model = create_demo_model()
+model = create_model()
 
 # Custom CSS for styling
 st.markdown("""
@@ -286,15 +319,18 @@ input_data = np.array([
 # Predict Button
 if st.button("🔍 Predict Heart Disease Risk", type="primary"):
     try:
-        prediction = model.predict(input_data)[0]
-        prediction_proba = model.predict_proba(input_data)[0]
+        if SKLEARN_AVAILABLE:
+            prediction = model.predict(input_data)[0]
+            prediction_proba = model.predict_proba(input_data)[0]
+        else:
+            prediction, prediction_proba = model(input_data)
         
         risk_percentage = prediction_proba[1] * 100
         
         if prediction == 1:
             st.markdown(
                 f'<div class="prediction-card error-card">'
-                f'High Risk: Potential Heart Disease Detected<br><br>'
+                f'🚨 High Risk: Potential Heart Disease Detected<br><br>'
                 f'Risk Probability: {risk_percentage:.1f}%</div>',
                 unsafe_allow_html=True
             )
@@ -307,7 +343,7 @@ if st.button("🔍 Predict Heart Disease Risk", type="primary"):
         else:
             st.markdown(
                 f'<div class="prediction-card success-card">'
-                f'Low Risk: No Significant Heart Disease Detected<br><br>'
+                f'✅ Low Risk: No Significant Heart Disease Detected<br><br>'
                 f'Risk Probability: {risk_percentage:.1f}%</div>',
                 unsafe_allow_html=True
             )
@@ -324,10 +360,10 @@ if st.button("🔍 Predict Heart Disease Risk", type="primary"):
             st.write(f"**Probability of No Heart Disease:** {prediction_proba[0]*100:.1f}%")
             st.progress(float(prediction_proba[1]))
             
-        st.info(" **Note:** This is a demonstration using simulated data. Always consult healthcare professionals for medical advice.")
+        st.info("💡 **Note:** This is a demonstration using simulated data. Always consult healthcare professionals for medical advice.")
         
     except Exception as e:
-        st.error(f"An error occurred during prediction. Please check your inputs.")
+        st.error(f"❌ An error occurred during prediction. Please check your inputs.")
 
 # Footer
 st.markdown("---")
